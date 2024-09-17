@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_emendas_web_ui=self.webpackChunk_emendas_web_ui||[]).push([[947],{21947:(e,a,r)=>{r.r(a),r.d(a,{default:()=>n});var t=r(61462),l=r(57593),d=(0,l.rule)({w:"100%","&>div":{pos:"relative",padb:"56.25%",h:0},"& iframe":{pos:"absolute",top:0,left:0,w:"100%",h:"100%"}});const n=function(e){var a=e.id;return(0,e.renderWrap)(t.createElement("div",{className:d},t.createElement("div",null,t.createElement("iframe",{src:"https://jsfiddle.net/".concat(a,"/embedded/"),frameBorder:"0",allowFullScreen:!0}))))}}}]);
+//# sourceMappingURL=947.chunk.js.map
