@@ -40,7 +40,7 @@ function geoJsonFromGeo(geo, DATA) {
     case 'regiao_de_saude': {
       return async function () {
         const regiao_municipios = DATA.DTB.filter(
-          (entry) => entry.regional_id + '' === geo.id + '',
+          (entry) => entry.regiao_de_saude_id + '' === geo.id + '',
         )
 
         const regiao_municipios_dict = Object.fromEntries(

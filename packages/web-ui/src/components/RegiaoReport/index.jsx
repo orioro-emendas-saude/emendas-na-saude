@@ -34,7 +34,7 @@ export function RegiaoReport() {
           geoType="municipio"
           indicatorId={indicatorId}
           entries={DATA.municipios.filter(
-            (municipio) => municipio.regional_id === geoId,
+            (municipio) => municipio.regiao_de_saude_id === geoId,
           )}
         />
       </Flex>

@@ -54,7 +54,7 @@ export function Breadcrumb() {
     }
     case 'municipio': {
       const municipio = DATA.municipio[geoId]
-      const regiao = DATA.regiao_de_saude[municipio.regional_id]
+      const regiao = DATA.regiao_de_saude[municipio.regiao_de_saude_id]
       const uf = DATA.uf[regiao.uf_id]
 
       return (
