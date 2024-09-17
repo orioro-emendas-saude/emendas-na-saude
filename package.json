@@ -1,0 +1,24 @@
+{
+  "name": "emendas-na-saude",
+  "packageManager": "yarn@4.4.1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "dev": "yarn workspaces foreach --all -pi --include '@emendas/web-ui' run dev",
+    "storybook": "yarn workspace @emendas/web-ui run storybook"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
+  },
+  "resolutions": {
+    "@mui/base": "5.0.0-beta.40"
+  }
+}

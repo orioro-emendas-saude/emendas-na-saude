@@ -1,0 +1,82 @@
+import { memoize } from 'lodash-es'
+import Papa from 'papaparse'
+
+export * from './geoTypes'
+
+export function fetchCsv(url, options = {}) {
+  return new Promise((resolve) => {
+    Papa.parse(url, {
+      header: true,
+      ...options,
+      download: true,
+      complete: ({ data, errors, meta }) => resolve([data, errors, meta]),
+    })
+  })
+}
+
+export const loadIndicators = memoize(async function () {
+  const [indicators] = await fetchCsv('/data/indicadores/metadata.csv')
+
+  return Object.fromEntries(indicators.map((spec) => [spec.id, spec]))
+})
+
+function parseNumberPtBR(numberString) {
+  // Replace Brazilian formatting (period for thousand separator and comma for decimal point)
+  const normalized = numberString.replace(/\./g, '').replace(',', '.')
+  const val = parseFloat(normalized)
+
+  return Number.isNaN(val) ? 0 : val
+}
+
+function addRank(entries, key, direction = 'ASC') {
+  const ranked = [...entries].sort((entryA, entryB) => {
+    const valueA = entryA[key]
+    const valueB = entryB[key]
+
+    return direction === 'ASC'
+      ? valueA <= valueB
+        ? -1
+        : 1
+      : valueA <= valueB
+        ? 1
+        : -1
+  })
+
+  return ranked.map((entry, index) => ({
+    ...entry,
+    [`${key}_rank`]: index + 1,
+  }))
+}
+
+function dataLoader({ url }) {
+  return memoize(async function () {
+    const indicators = await loadIndicators()
+
+    const indicatorIds = Object.keys(indicators)
+
+    const [entries] = await fetchCsv(url, {
+      transform: (value, column) => {
+        if (indicatorIds.includes(column.toUpperCase())) {
+          return parseNumberPtBR(value)
+        } else {
+          return value
+        }
+      },
+    })
+
+    //
+    // For each indicator, apply rank
+    //
+    return indicatorIds.reduce(
+      (acc, indicatorId) =>
+        addRank(acc, indicatorId, indicators[indicatorId].rank),
+      entries,
+    )
+  })
+}
+
+export const loadUfs = dataLoader({ url: '/data/indicadores/ufs.csv' })
+
+export const loadMunicipios = dataLoader({
+  url: '/data/indicadores/municipios.csv',
+})
