@@ -2,7 +2,7 @@
   "name": "@emendas/web-ui",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://orioro.github.io/emendas-na-saude",
+  "homepage": "https://orioro-emendas-saude.github.io/emendas-na-saude",
   "dependencies": {
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
