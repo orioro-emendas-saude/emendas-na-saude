@@ -1,11 +1,10 @@
-import { Box } from '@orioro/react-ui-core'
-import React from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { Flex } from '@orioro/react-ui-core'
+import { Outlet } from 'react-router-dom'
 
 export function Root() {
   return (
-    <Box p="6">
+    <Flex p="6" direction="column" gap="4">
       <Outlet />
-    </Box>
+    </Flex>
   )
 }

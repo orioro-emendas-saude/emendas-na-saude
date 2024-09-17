@@ -3,18 +3,28 @@ import { useData } from '../DataContext'
 import { Heading } from '@radix-ui/themes'
 import { get } from 'lodash-es'
 import { useParams } from 'react-router-dom'
-import { fmtIndicator } from '../../lib/data'
+import { addRank, fmtIndicator } from '../../lib/data'
 import { IndicatorRankBadge } from '../IndicatorRankBadge'
 
-export function UfSummary({ id }) {
+export function RegiaoSummary({ id }) {
   const { indicatorId } = useParams()
 
   const DATA = useData()
 
+  const ufRegioes = addRank(
+    DATA.regioes_de_saude.filter(
+      (reg) => reg.uf_id === DATA.regiao_de_saude[id].uf_id,
+    ),
+    indicatorId,
+    DATA.indicators[indicatorId].rank,
+  )
+
   return (
     <Flex direction="column">
       <Heading as="h1" size="8">
-        {get(DATA, `uf.${id}.name`)}
+        <span style={{ fontSize: '1rem' }}>Região de Saúde</span>
+        <br />
+        {get(DATA, `regiao_de_saude.${id}.name`)}
       </Heading>
 
       <Flex gap="2">
@@ -23,7 +33,7 @@ export function UfSummary({ id }) {
             type: 'text',
           }}
           label="População"
-          value={get(DATA, `uf.${id}.Pop_2022`)}
+          value={get(DATA, `regiao_de_saude.${id}.populacao`)}
         />
 
         <Output
@@ -36,12 +46,15 @@ export function UfSummary({ id }) {
               <div>
                 {fmtIndicator(
                   DATA.indicators[indicatorId],
-                  get(DATA, `uf.${id}.${indicatorId}`),
+                  get(DATA, `regiao_de_saude.${id}.${indicatorId}`),
                 )}
               </div>
               <IndicatorRankBadge
                 indicatorId={indicatorId}
-                rankLabel={get(DATA, `uf.${id}.${indicatorId}_FAIXA`)}
+                rankLabel={get(
+                  DATA,
+                  `regiao_de_saude.${id}.${indicatorId}_FAIXA`,
+                )}
               />
             </Flex>
           }
@@ -51,8 +64,12 @@ export function UfSummary({ id }) {
           schema={{
             type: 'text',
           }}
-          label="Ranking entre estados brasileiros"
-          value={get(DATA, `uf.${id}.${indicatorId}_rank`)}
+          label="Ranking dentre Regiões de Saúde do estado"
+          value={[
+            ufRegioes.find((reg) => reg.id === id)[`${indicatorId}_rank`],
+            'de',
+            ufRegioes.length,
+          ].join(' ')}
         />
       </Flex>
     </Flex>

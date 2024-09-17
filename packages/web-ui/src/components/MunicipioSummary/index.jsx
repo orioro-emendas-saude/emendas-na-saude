@@ -3,18 +3,24 @@ import { useData } from '../DataContext'
 import { Heading } from '@radix-ui/themes'
 import { get } from 'lodash-es'
 import { useParams } from 'react-router-dom'
-import { fmtIndicator } from '../../lib/data'
+import { addRank, fmtIndicator } from '../../lib/data'
 import { IndicatorRankBadge } from '../IndicatorRankBadge'
 
-export function UfSummary({ id }) {
+export function MunicipioSummary({ id }) {
   const { indicatorId } = useParams()
 
   const DATA = useData()
 
+  const ufMunicipios = addRank(
+    DATA.municipios.filter((mun) => mun.uf_id === DATA.municipio[id].uf_id),
+    indicatorId,
+    DATA.indicators[indicatorId].rank,
+  )
+
   return (
     <Flex direction="column">
       <Heading as="h1" size="8">
-        {get(DATA, `uf.${id}.name`)}
+        {get(DATA, `municipio.${id}.name`)}
       </Heading>
 
       <Flex gap="2">
@@ -23,7 +29,7 @@ export function UfSummary({ id }) {
             type: 'text',
           }}
           label="População"
-          value={get(DATA, `uf.${id}.Pop_2022`)}
+          value={get(DATA, `municipio.${id}.populacao`)}
         />
 
         <Output
@@ -36,12 +42,12 @@ export function UfSummary({ id }) {
               <div>
                 {fmtIndicator(
                   DATA.indicators[indicatorId],
-                  get(DATA, `uf.${id}.${indicatorId}`),
+                  get(DATA, `municipio.${id}.${indicatorId}`),
                 )}
               </div>
               <IndicatorRankBadge
                 indicatorId={indicatorId}
-                rankLabel={get(DATA, `uf.${id}.${indicatorId}_FAIXA`)}
+                rankLabel={get(DATA, `municipio.${id}.${indicatorId}_FAIXA`)}
               />
             </Flex>
           }
@@ -51,8 +57,12 @@ export function UfSummary({ id }) {
           schema={{
             type: 'text',
           }}
-          label="Ranking entre estados brasileiros"
-          value={get(DATA, `uf.${id}.${indicatorId}_rank`)}
+          label="Posição entre municípios do estado"
+          value={[
+            ufMunicipios.find((mun) => mun.id === id)[`${indicatorId}_rank`],
+            'de',
+            ufMunicipios.length,
+          ].join(' ')}
         />
       </Flex>
     </Flex>

@@ -1,4 +1,3 @@
-import { interpolateBlues, interpolateGreens } from 'd3-scale-chromatic'
 import { get } from 'lodash-es'
 import React from 'react'
 import {
@@ -9,33 +8,62 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   Cell,
 } from 'recharts'
 import { useData } from '../DataContext'
 import { COLOR_SCALES } from '../MainMap'
 import { color } from 'd3-color'
+import { fmtIndicator } from '../../lib/data'
+import { useNavigate } from 'react-router-dom'
 
 const CHART_COLORS = Object.fromEntries(
   Object.entries(COLOR_SCALES).map(([key, scale]) => [key, scale(0.5)]),
 )
 
+const Y_AXIS = {
+  tickSize: 10,
+  label: {
+    angle: -90,
+    offset: 30,
+    position: 'left',
+    style: {
+      textAnchor: 'middle',
+    },
+  },
+  tick: {
+    // stroke: 'black',
+    fontSize: 12,
+  },
+  tickLine: false,
+  axisLine: false,
+}
+
 export function IndicatorBarChart({
+  geoType,
   indicatorId,
   entries,
   highlights = {},
   width = '100%',
   height = 400,
+  onClickBar,
 }) {
   const DATA = useData()
 
-  const chartColor = CHART_COLORS[get(DATA, `indicators.${indicatorId}.color`)]
+  const navigate = useNavigate()
+
+  const chartColor =
+    CHART_COLORS[get(DATA, `indicators.${indicatorId}.color`)] ||
+    CHART_COLORS.blue
 
   const sortedEntries = [...entries].sort((entryA, entryB) => {
     const rankKey = `${indicatorId}_rank`
     return entryA[rankKey] <= entryB[rankKey] ? -1 : 1
   })
+
+  const fmtValue = (value) => fmtIndicator(DATA.indicators[indicatorId], value)
+
+  const clickable = Boolean(geoType)
 
   return (
     <ResponsiveContainer width={width} height={height}>
@@ -46,7 +74,7 @@ export function IndicatorBarChart({
         margin={{
           top: 5,
           right: 30,
-          left: 20,
+          left: 40,
           bottom: 100,
         }}
       >
@@ -60,13 +88,27 @@ export function IndicatorBarChart({
           fontSize={12}
         />
         <YAxis
-        // label={{
-        //   angle: -90,
-        //   value: get(DATA, `indicators.${indicatorId}.shortName`),
-        // }}
+          {...Y_AXIS}
+          label={{
+            ...Y_AXIS.label,
+            value: DATA.indicators[indicatorId].shortName,
+          }}
+          tickFormatter={fmtValue}
         />
-        <Tooltip />
-        <Bar dataKey={indicatorId} activeBar={<Rectangle fill={chartColor} />}>
+        <Tooltip formatter={fmtValue} />
+        <Bar
+          onClick={
+            clickable
+              ? (entry) =>
+                  navigate(`/mapa/${indicatorId}/${geoType}/${entry.id}`)
+              : undefined
+          }
+          style={{
+            cursor: clickable ? 'pointer' : 'auto',
+          }}
+          dataKey={indicatorId}
+          activeBar={<Rectangle fill={chartColor} />}
+        >
           {sortedEntries.map((entry, index) => {
             const entryColor = highlights[entry.id]
               ? chartColor

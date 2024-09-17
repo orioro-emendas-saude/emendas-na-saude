@@ -13,6 +13,9 @@
   },
   "scripts": {
     "dev": "yarn workspaces foreach --all -pi --include '@emendas/web-ui' run dev",
+    "build": "yarn workspace @emendas/web-ui run build",
+    "deploy": "yarn workspace @emendas/web-ui run deploy",
+    "start": "yarn workspace @emendas/web-ui run start",
     "storybook": "yarn workspace @emendas/web-ui run storybook"
   },
   "devDependencies": {

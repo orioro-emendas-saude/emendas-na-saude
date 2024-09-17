@@ -1,14 +1,14 @@
-import React from 'react'
-import { MainMap } from '../../components/MainMap'
+import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function Index() {
-  return (
-    <MainMap
-      geo={{
-        type: 'pais',
-        id: 'BR',
-      }}
-      indicator="INEAB"
-    />
-  )
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    navigate('/mapa/INEAB/pais/brasil', {
+      replace: true,
+    })
+  }, [])
+
+  return null
 }

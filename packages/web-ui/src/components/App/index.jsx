@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
-import styled, { ThemeProvider } from 'styled-components'
+import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 
 import { createHashRouter, RouterProvider } from 'react-router-dom'
 
+import { Index } from '../../routes/index'
 import { Mapa } from '../../routes/mapa'
 
 import { Root } from '../../routes/root'
@@ -29,20 +30,17 @@ const AppContainer = styled.main`
 `
 
 export function App() {
+  const printComponentRef = useRef(null)
+
   return (
     <ThemeProvider theme={theme()}>
-      <Theme accentColor="sky">
-        <OutputProvider renderers={OUTPUTS} variant="labeled">
-          <InputProvider renderers={INPUTS} variant="labeled">
-            <DialogSystem>
-              <DataProvider>
-                <AppContainer>
-                  <Container
-                    maxWidth={1200}
-                    // style={{
-                    //   background: 'green',
-                    // }}
-                  >
+      <AppContainer ref={printComponentRef}>
+        <Theme accentColor="green">
+          <OutputProvider renderers={OUTPUTS} variant="labeled">
+            <InputProvider renderers={INPUTS} variant="labeled">
+              <DialogSystem>
+                <DataProvider>
+                  <Container maxWidth={1200}>
                     <RouterProvider
                       router={createHashRouter([
                         {
@@ -51,23 +49,25 @@ export function App() {
                           children: [
                             {
                               index: true,
-                              element: <Mapa />,
+                              element: <Index />,
                             },
                             {
                               path: 'mapa/:indicatorId/:geoType/:geoId',
-                              element: <Mapa />,
+                              element: (
+                                <Mapa printComponentRef={printComponentRef} />
+                              ),
                             },
                           ],
                         },
                       ])}
                     />
                   </Container>
-                </AppContainer>
-              </DataProvider>
-            </DialogSystem>
-          </InputProvider>
-        </OutputProvider>
-      </Theme>
+                </DataProvider>
+              </DialogSystem>
+            </InputProvider>
+          </OutputProvider>
+        </Theme>
+      </AppContainer>
     </ThemeProvider>
   )
 }

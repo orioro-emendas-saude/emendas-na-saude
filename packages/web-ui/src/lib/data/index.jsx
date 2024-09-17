@@ -1,7 +1,14 @@
 import { memoize } from 'lodash-es'
 import Papa from 'papaparse'
 
-export * from './geoTypes'
+export function assetUrl(path) {
+  const root =
+    process.env.NODE_ENV === 'production'
+      ? (process.env.REACT_APP_ASSETS_ROOT || '').replace(/\/$/, '')
+      : '/emendas-na-saude'
+
+  return `${root}/${path.replace(/^\//, '')}`
+}
 
 export function fetchCsv(url, options = {}) {
   return new Promise((resolve) => {
@@ -14,8 +21,21 @@ export function fetchCsv(url, options = {}) {
   })
 }
 
+export function fmtIndicator(spec, value) {
+  const { numberFormatter, measureUnit } = spec
+
+  value = new Intl.NumberFormat('pt-BR', {
+    maximumSignificantDigits: 2,
+    ...(numberFormatter ? JSON.parse(numberFormatter) : {}),
+  }).format(value)
+
+  return measureUnit ? `${value} ${measureUnit}` : value
+}
+
 export const loadIndicators = memoize(async function () {
-  const [indicators] = await fetchCsv('/data/indicadores/metadata.csv')
+  const [indicators] = await fetchCsv(
+    assetUrl('/data/indicadores/metadata.csv'),
+  )
 
   return Object.fromEntries(indicators.map((spec) => [spec.id, spec]))
 })
@@ -28,7 +48,7 @@ function parseNumberPtBR(numberString) {
   return Number.isNaN(val) ? 0 : val
 }
 
-function addRank(entries, key, direction = 'ASC') {
+export function addRank(entries, key, direction = 'ASC') {
   const ranked = [...entries].sort((entryA, entryB) => {
     const valueA = entryA[key]
     const valueB = entryB[key]
@@ -75,8 +95,14 @@ function dataLoader({ url }) {
   })
 }
 
-export const loadUfs = dataLoader({ url: '/data/indicadores/ufs.csv' })
+export const loadUfs = dataLoader({
+  url: assetUrl('/data/indicadores/ufs.csv'),
+})
+
+export const loadRegioesDeSaude = dataLoader({
+  url: assetUrl('/data/indicadores/regioes-de-saude.csv'),
+})
 
 export const loadMunicipios = dataLoader({
-  url: '/data/indicadores/municipios.csv',
+  url: assetUrl('/data/indicadores/municipios.csv'),
 })

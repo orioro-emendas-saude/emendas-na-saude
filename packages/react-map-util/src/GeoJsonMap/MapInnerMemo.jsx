@@ -25,6 +25,7 @@ export const MapInnerMemo = memo(function MapInner({
                 fill="white"
                 stroke="black"
                 {...props}
+                cursor={props.onClick ? 'pointer' : 'auto'}
                 onMouseEnter={(e) => {
                   onSetHoveredGeo(geo)
 

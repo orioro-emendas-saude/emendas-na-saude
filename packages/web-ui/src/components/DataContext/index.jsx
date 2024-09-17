@@ -1,12 +1,17 @@
+import { createContext, useCallback, useContext } from 'react'
 import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
-import { loadIndicators, loadMunicipios, loadUfs } from '../../lib/data'
-import { LoadingIndicator, useFetch } from '@orioro/react-ui-core'
+  assetUrl,
+  fetchCsv,
+  loadIndicators,
+  loadMunicipios,
+  loadRegioesDeSaude,
+  loadUfs,
+} from '../../lib/data'
+import {
+  LoadingIndicator,
+  LoadingOverlay,
+  useFetch,
+} from '@orioro/react-ui-core'
 
 export const DataContext = createContext({
   indicators: null,
@@ -18,17 +23,26 @@ export const DataContext = createContext({
 export function DataProvider({ children }) {
   const [dataQuery] = useFetch(
     useCallback(async () => {
-      const [indicators, ufs, regioes_de_saude, municipios] = await Promise.all(
-        [loadIndicators(), loadUfs(), Promise.resolve(null), loadMunicipios()],
-      )
+      const [indicators, ufs, regioes_de_saude, municipios, [DTB]] =
+        await Promise.all([
+          loadIndicators(),
+          loadUfs(),
+          loadRegioesDeSaude(),
+          loadMunicipios(),
+          fetchCsv(assetUrl('/geo/DTB.csv')),
+        ])
 
       return {
         indicators,
         ufs,
         uf: Object.fromEntries(ufs.map((uf) => [uf.id, uf])),
         regioes_de_saude,
+        regiao_de_saude: Object.fromEntries(
+          regioes_de_saude.map((reg) => [reg.id, reg]),
+        ),
         municipios,
         municipio: Object.fromEntries(municipios.map((mun) => [mun.id, mun])),
+        DTB,
       }
     }, []),
   )
@@ -40,7 +54,16 @@ export function DataProvider({ children }) {
           {children}
         </DataContext.Provider>
       )}
-      {dataQuery.status === 'loading' && <LoadingIndicator />}
+      {dataQuery.status === 'loading' && (
+        <div
+          style={{
+            height: '400px',
+            position: 'relative',
+          }}
+        >
+          <LoadingOverlay />
+        </div>
+      )}
     </>
   )
 }

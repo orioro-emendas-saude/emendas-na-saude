@@ -89,6 +89,7 @@ export function GeoJsonMap({
       style={{
         position: 'relative',
       }}
+      onMouseLeave={() => setHoveredGeo(null)}
     >
       <div
         ref={tooltip.refs.setReference}
