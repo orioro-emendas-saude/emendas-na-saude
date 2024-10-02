@@ -49,23 +49,16 @@ export function DataTable({ data, schema, ...props }) {
   const columnHelper = createColumnHelper()
   const columns = useMemo(() => {
     return Object.keys(schema).map((key) => {
-      const variableSchema = schema[key]
+      const fmtValue = get(schema, `${key}.fmtValue`)
 
       return columnHelper.accessor(key, {
         header: get(schema, `${key}.label`) || key,
         cell: (info) => {
-          switch (variableSchema.type) {
-            case 'continuous': {
-              const fmtNumber = (value) =>
-                Intl.NumberFormat('pt-BR', variableSchema.numberFormat).format(
-                  value,
-                )
+          const cellValue = info.getValue()
 
-              return fmtNumber(info.getValue())
-            }
-            default:
-              return info.getValue()
-          }
+          return typeof fmtValue === 'function'
+            ? fmtValue(cellValue, info.row.original)
+            : cellValue
         },
       })
     })

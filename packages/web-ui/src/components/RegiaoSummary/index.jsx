@@ -5,6 +5,7 @@ import { get } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { addRank, fmtIndicator } from '../../lib/data'
 import { IndicatorRankBadge } from '../IndicatorRankBadge'
+import { IndicatorAdditionalFields } from '../IndicatorAdditionalFields'
 
 export function RegiaoSummary({ id }) {
   const { indicatorId } = useParams()
@@ -70,6 +71,18 @@ export function RegiaoSummary({ id }) {
             'de',
             ufRegioes.length,
           ].join(' ')}
+        />
+
+        <IndicatorAdditionalFields
+          indicatorId={indicatorId}
+          additionalFields={
+            DATA.indicators[indicatorId].additionalFields_regiao_de_saude
+              ? JSON.parse(
+                  DATA.indicators[indicatorId].additionalFields_regiao_de_saude,
+                )
+              : null
+          }
+          data={DATA.regiao_de_saude[id]}
         />
       </Flex>
     </Flex>

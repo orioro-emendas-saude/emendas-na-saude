@@ -18,6 +18,12 @@ import ReactToPrint from 'react-to-print'
 import styled from 'styled-components'
 import { Icon } from '@mdi/react'
 import { mdiPrinterOutline } from '@mdi/js'
+import { GeographySelector } from '../../components/GeographySelector'
+import { DataTable } from '../../components/DataTable'
+import { fmtIndicator } from '../../lib/data'
+import { UfAllReport } from '../../components/UfAllReport'
+import { RegiaoAllReport } from '../../components/RegiaoAllReport'
+import { MunicipioAllReport } from '../../components/MunicipioAllReport'
 
 const HideOnPrint = styled.div`
   @media print {
@@ -56,40 +62,7 @@ export function Mapa({ printComponentRef }) {
           }}
         >
           <HideOnPrint>
-            <Input
-              schema={useMemo(
-                () => ({
-                  type: 'select',
-                  options: [
-                    ...DATA.ufs.map((uf) => ({
-                      label: `${uf.name} (UF)`,
-                      value: `uf|${uf.id}`,
-                    })),
-                    ...DATA.regioes_de_saude.map((reg) => ({
-                      label: `${reg.name} (Região de Saúde)`,
-                      value: `regiao_de_saude|${reg.id}`,
-                    })),
-                    ...DATA.municipios.map((mun) => ({
-                      label: `${mun.name} (Município)`,
-                      value: `municipio|${mun.id}`,
-                    })),
-                  ],
-                  placeholder:
-                    'Pesquise por município, região de saúde ou estado',
-                }),
-                [DATA],
-              )}
-              value={`${geoType}|${geoId}`}
-              onSetValue={(nextValue) => {
-                if (nextValue) {
-                  const [nextGeoType, nextGeoId] = nextValue.split('|')
-
-                  navigate(`/mapa/${indicatorId}/${nextGeoType}/${nextGeoId}`)
-                } else {
-                  navigate(`/mapa/${indicatorId}/pais/brasil`)
-                }
-              }}
-            />
+            <GeographySelector />
           </HideOnPrint>
           <Breadcrumb />
         </Flex>
@@ -122,39 +95,99 @@ export function Mapa({ printComponentRef }) {
                 navigate(`/mapa/${indicatorId}/${type}/${id}`)
               }
             }}
-            indicator={indicatorId}
+            indicatorId={indicatorId}
           />
         </Flex>
         <Flex direction="column">
-          {geoType === 'uf' && <UfSummary id={geoId} />}
-          {geoType === 'regiao_de_saude' && <RegiaoSummary id={geoId} />}
-          {geoType === 'municipio' && <MunicipioSummary id={geoId} />}
+          {indicatorId !== 'todos' && (
+            <>
+              {geoType === 'uf' && <UfSummary id={geoId} />}
+              {geoType === 'regiao_de_saude' && <RegiaoSummary id={geoId} />}
+              {geoType === 'municipio' && <MunicipioSummary id={geoId} />}
 
-          <Box
-            p="3"
-            style={{
-              borderRadius: '4px',
-              backgroundColor: 'var(--accent-3)',
-              fontSize: '.9rem',
-            }}
-          >
-            <Flex direction="column" gap="3">
-              <Heading as="h3" size="4">
-                {get(DATA, `indicators.${indicatorId}.name`)}
-              </Heading>
-              <Markdown>
-                {get(DATA, `indicators.${indicatorId}.description`)}
-              </Markdown>
-            </Flex>
-          </Box>
+              <Box
+                p="3"
+                style={{
+                  borderRadius: '4px',
+                  backgroundColor: 'var(--accent-3)',
+                  fontSize: '.9rem',
+                }}
+              >
+                <Flex direction="column" gap="3">
+                  <Heading as="h3" size="4">
+                    {get(DATA, `indicators.${indicatorId}.name`)}
+                  </Heading>
+                  <Markdown>
+                    {get(DATA, `indicators.${indicatorId}.description`)}
+                  </Markdown>
+                </Flex>
+              </Box>
+              {geoType === 'pais' && <PaisReport />}
+            </>
+          )}
 
-          {geoType === 'pais' && <PaisReport />}
+          {indicatorId === 'todos' && (
+            <>
+              <Flex direction="column">
+                <Heading as="h1" size="8">
+                  {get(DATA, `${geoType}.${geoId}.name`)}
+                </Heading>
+
+                <Heading as="h3" size="5">
+                  Resumo dos indicadores:
+                </Heading>
+                <DataTable
+                  data={Object.values(DATA.indicators)
+                    .map((indicator) => {
+                      const value = get(
+                        DATA,
+                        geoType === 'pais'
+                          ? `brasil.${indicator.id}`
+                          : `${geoType}.${geoId}.${indicator.id}`,
+                      )
+
+                      return {
+                        name: indicator.shortName,
+                        value:
+                          typeof value === 'undefined'
+                            ? null
+                            : fmtIndicator(
+                                DATA.indicators[indicator.id],
+                                value,
+                              ),
+                      }
+                    })
+                    .filter((entry) => entry.value !== null)}
+                  schema={{
+                    name: {
+                      label: 'Indicador',
+                    },
+                    value: {
+                      label: 'Valor',
+                    },
+                  }}
+                />
+              </Flex>
+            </>
+          )}
         </Flex>
       </Flex>
 
-      {geoType === 'uf' && <UfReport />}
-      {geoType === 'regiao_de_saude' && <RegiaoReport />}
-      {geoType === 'municipio' && <MunicipioReport />}
+      {indicatorId !== 'todos' && (
+        <>
+          {geoType === 'uf' && <UfReport />}
+          {geoType === 'regiao_de_saude' && <RegiaoReport />}
+          {geoType === 'municipio' && <MunicipioReport />}
+        </>
+      )}
+
+      {indicatorId === 'todos' && (
+        <>
+          {geoType === 'uf' && <UfAllReport />}
+          {geoType === 'regiao_de_saude' && <RegiaoAllReport />}
+          {geoType === 'municipio' && <MunicipioAllReport />}
+        </>
+      )}
     </Flex>
   )
 }

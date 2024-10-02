@@ -51,6 +51,12 @@ export function App() {
                               index: true,
                               element: <Index />,
                             },
+
+                            // {
+                            //   path: 'mapa/todos/:geoType/:geoId',
+                            //   element: <div>test</div>,
+                            // },
+
                             {
                               path: 'mapa/:indicatorId/:geoType/:geoId',
                               element: (

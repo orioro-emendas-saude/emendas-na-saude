@@ -19,7 +19,7 @@ import { Heading } from '@radix-ui/themes'
 function geoJsonFromGeo(geo, DATA) {
   switch (geo.type) {
     case 'pais': {
-      return 'https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR?formato=application/vnd.geo+json&intrarregiao=UF'
+      return 'https://servicodados.ibge.gov.br/api/v3/malhas/paises/BR?formato=application/vnd.geo+json&intrarregiao=UF&qualidade=minima'
     }
 
     case 'uf': {
@@ -48,7 +48,7 @@ function geoJsonFromGeo(geo, DATA) {
         )
 
         const estadoGeoJson = await fetch(
-          `https://servicodados.ibge.gov.br/api/v3/malhas/estados/${regiao_municipios[0].estado_id}?formato=application/vnd.geo+json&intrarregiao=municipio`,
+          `https://servicodados.ibge.gov.br/api/v3/malhas/estados/${regiao_municipios[0].estado_id}?formato=application/vnd.geo+json&intrarregiao=municipio&qualidade=minima`,
         ).then((res) => res.json())
 
         return {
@@ -60,7 +60,7 @@ function geoJsonFromGeo(geo, DATA) {
       }
     }
     case 'municipio': {
-      return `https://servicodados.ibge.gov.br/api/v3/malhas/municipios/${geo.id}?formato=application/vnd.geo+json`
+      return `https://servicodados.ibge.gov.br/api/v3/malhas/municipios/${geo.id}?formato=application/vnd.geo+json&qualidade=minima`
     }
   }
 }
@@ -203,7 +203,7 @@ function getTooltipContents(geo, DATA) {
   )
 }
 
-export function MainMap({ geo, onSetGeo, indicator = 'INEAB' }) {
+export function MainMap({ geo, onSetGeo, indicatorId }) {
   const DATA = useData()
 
   const tooltip = useCallback((geo) => getTooltipContents(geo, DATA), [DATA])
@@ -213,10 +213,14 @@ export function MainMap({ geo, onSetGeo, indicator = 'INEAB' }) {
       geoJson={geoJsonFromGeo(geo, DATA)}
       metadata={metadataFromGeo(geo, DATA)}
       getTooltipContents={tooltip}
-      dataContext={dataContextFromGeo(geo, indicator, DATA)}
+      dataContext={dataContextFromGeo(geo, indicatorId, DATA)}
       getFeatureId={getFeatureIdFromGeo(geo)}
       getGeographyProps={(feature, { fillColorScale }) => {
-        const fill = fillColorScale(feature.properties[indicator]) || 'white'
+        const fill =
+          !indicatorId || !feature.properties[indicatorId]
+            ? '#dddddd'
+            : fillColorScale(feature.properties[indicatorId]) || 'white'
+
         return {
           fill,
           style: {

@@ -1,4 +1,4 @@
-regiao_id,regiao,estado_id,estado,estado_abrev,regional_id,regional_nome,municipio_id,municipio_id_sdv,municipio
+regiao_id,regiao,estado_id,estado,estado_abrev,regiao_de_saude_id,regional_nome,municipio_id,municipio_id_sdv,municipio
 1,Norte,11,Rondônia,RO,11001,"Vale do Jamari",1100023,110002,Ariquemes
 1,Norte,11,Rondônia,RO,11001,"Vale do Jamari",1100130,110013,"Machadinho D'Oeste"
 1,Norte,11,Rondônia,RO,11001,"Vale do Jamari",1100262,110026,"Rio Crespo"

@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext } from 'react'
 import {
   assetUrl,
   fetchCsv,
+  loadBr,
   loadIndicators,
   loadMunicipios,
   loadRegioesDeSaude,
@@ -23,12 +24,13 @@ export const DataContext = createContext({
 export function DataProvider({ children }) {
   const [dataQuery] = useFetch(
     useCallback(async () => {
-      const [indicators, ufs, regioes_de_saude, municipios, [DTB]] =
+      const [indicators, ufs, regioes_de_saude, municipios, brasil, [DTB]] =
         await Promise.all([
           loadIndicators(),
           loadUfs(),
           loadRegioesDeSaude(),
           loadMunicipios(),
+          loadBr(),
           fetchCsv(assetUrl('/geo/DTB.csv')),
         ])
 
@@ -42,6 +44,7 @@ export function DataProvider({ children }) {
         ),
         municipios,
         municipio: Object.fromEntries(municipios.map((mun) => [mun.id, mun])),
+        brasil: brasil[0],
         DTB,
       }
     }, []),

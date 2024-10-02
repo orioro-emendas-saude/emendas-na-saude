@@ -5,6 +5,7 @@ import { get } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { fmtIndicator } from '../../lib/data'
 import { IndicatorRankBadge } from '../IndicatorRankBadge'
+import { IndicatorAdditionalFields } from '../IndicatorAdditionalFields'
 
 export function UfSummary({ id }) {
   const { indicatorId } = useParams()
@@ -53,6 +54,16 @@ export function UfSummary({ id }) {
           }}
           label="Ranking entre estados brasileiros"
           value={get(DATA, `uf.${id}.${indicatorId}_rank`)}
+        />
+
+        <IndicatorAdditionalFields
+          indicatorId={indicatorId}
+          additionalFields={
+            DATA.indicators[indicatorId].additionalFields_uf
+              ? JSON.parse(DATA.indicators[indicatorId].additionalFields_uf)
+              : null
+          }
+          data={DATA.uf[id]}
         />
       </Flex>
     </Flex>

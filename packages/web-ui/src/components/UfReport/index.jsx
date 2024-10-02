@@ -1,16 +1,14 @@
-import { Flex } from '@orioro/react-ui-core'
+import { Flex, ShadowExpandable } from '@orioro/react-ui-core'
 import { IndicatorBarChart } from '../IndicatorBarChart'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import { useData } from '../DataContext'
 import { Heading } from '@radix-ui/themes'
 import { DataTable } from '../DataTable'
 import { get } from 'lodash-es'
-import { addRank } from '../../lib/data'
+import { addRank, fmtIndicator } from '../../lib/data'
 
 export function UfReport() {
   const { indicatorId, geoId } = useParams()
-
-  const navigate = useNavigate()
 
   const DATA = useData()
 
@@ -30,85 +28,116 @@ export function UfReport() {
 
   return (
     <Flex direction="column">
-      <Flex direction="column" gap="5">
-        <Heading as="h3">Comparativo com demais estados:</Heading>
-        <IndicatorBarChart
-          geoType="uf"
-          indicatorId={indicatorId}
-          entries={DATA.ufs}
-          highlights={{
-            [geoId]: true,
-          }}
-        />
-      </Flex>
-
-      <Flex direction="column" gap="5">
-        <Heading as="h3">Comparativo entre regiões de saúde:</Heading>
-        <IndicatorBarChart
-          geoType="regiao_de_saude"
-          indicatorId={indicatorId}
-          entries={ufRegioes}
-          highlights={{
-            [geoId]: true,
-          }}
-        />
-      </Flex>
-
-      <Flex direction="column" gap="5">
-        <Heading as="h3">Comparativo entre municípios:</Heading>
-        <IndicatorBarChart
-          indicatorId={indicatorId}
-          geoType="municipio"
-          entries={ufMunicipios}
-          highlights={{
-            [geoId]: true,
-          }}
-        />
-      </Flex>
-
       <Flex
         direction={{
           xs: 'column',
           md: 'row',
         }}
-        gap="5"
       >
-        <Flex direction="column" gap="5">
-          <Heading as="h3">
-            20 Regiões de saúde com situação mais crítica:
-          </Heading>
+        {DATA.brasil[indicatorId] && (
+          <Flex
+            direction="column"
+            gap="5"
+            width={{
+              xs: '100%',
+              md: '50%',
+            }}
+          >
+            <Heading as="h3">Comparativo com Brasil</Heading>
+            <IndicatorBarChart
+              geoType="uf"
+              indicatorId={indicatorId}
+              entries={[uf, { ...DATA.brasil, name: 'Brasil' }]}
+              highlights={{
+                [geoId]: true,
+              }}
+            />
+          </Flex>
+        )}
+
+        <Flex
+          direction="column"
+          gap="5"
+          width={{
+            xs: '100%',
+            md: '50%',
+          }}
+        >
+          <Heading as="h3">Indicadores do estado:</Heading>
           <DataTable
-            data={ufRegioes.slice(0, 20)}
+            data={Object.values(DATA.indicators).map((indicator) => ({
+              name: indicator.shortName,
+              value: fmtIndicator(
+                DATA.indicators[indicator.id],
+                uf[indicator.id],
+              ),
+            }))}
+            schema={{
+              name: {
+                label: 'Indicador',
+              },
+              value: {
+                label: 'Valor',
+              },
+            }}
+          />
+        </Flex>
+      </Flex>
+
+      <Flex direction="column" gap="5">
+        <Heading as="h3">Regiões de saúde do estado:</Heading>
+
+        <ShadowExpandable collapsedHeight={800}>
+          <DataTable
+            data={ufRegioes}
             schema={{
               [`${indicatorId}_rank`]: {
                 label: 'Posição',
               },
               name: {
                 label: 'Região de Saúde',
+                fmtValue: (value, entry) => (
+                  <Link to={`/mapa/${indicatorId}/regiao_de_saude/${entry.id}`}>
+                    {value}
+                  </Link>
+                ),
               },
               [indicatorId]: {
                 label: get(DATA, `indicators.${indicatorId}.shortName`),
+                fmtValue: (value) =>
+                  fmtIndicator(DATA.indicators[indicatorId], value),
               },
             }}
           />
-        </Flex>
-        <Flex direction="column" gap="5">
-          <Heading as="h3">20 Municípios com situação mais crítica:</Heading>
+        </ShadowExpandable>
+      </Flex>
+
+      <Flex direction="column" gap="5">
+        <Heading as="h3">Municípios do estado:</Heading>
+
+        <ShadowExpandable collapsedHeight={800}>
           <DataTable
-            data={ufMunicipios.slice(0, 20)}
+            data={ufMunicipios}
             schema={{
               [`${indicatorId}_rank`]: {
                 label: 'Posição',
               },
               name: {
                 label: 'Município',
+                fmtValue: (value, entry) => (
+                  <Link to={`/mapa/${indicatorId}/municipio/${entry.id}`}>
+                    {value}
+                  </Link>
+                ),
               },
               [indicatorId]: {
                 label: get(DATA, `indicators.${indicatorId}.shortName`),
+                fmtValue: (value) =>
+                  fmtIndicator(DATA.indicators[indicatorId], value),
               },
             }}
           />
-        </Flex>
+        </ShadowExpandable>
       </Flex>
     </Flex>
   )

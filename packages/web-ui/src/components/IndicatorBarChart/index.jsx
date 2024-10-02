@@ -72,7 +72,7 @@ export function IndicatorBarChart({
         height={300}
         data={sortedEntries}
         margin={{
-          top: 5,
+          top: 30,
           right: 30,
           left: 40,
           bottom: 100,

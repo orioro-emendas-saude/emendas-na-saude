@@ -5,6 +5,7 @@ import { get } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { addRank, fmtIndicator } from '../../lib/data'
 import { IndicatorRankBadge } from '../IndicatorRankBadge'
+import { IndicatorAdditionalFields } from '../IndicatorAdditionalFields'
 
 export function MunicipioSummary({ id }) {
   const { indicatorId } = useParams()
@@ -63,6 +64,18 @@ export function MunicipioSummary({ id }) {
             'de',
             ufMunicipios.length,
           ].join(' ')}
+        />
+
+        <IndicatorAdditionalFields
+          indicatorId={indicatorId}
+          additionalFields={
+            DATA.indicators[indicatorId].additionalFields_municipio
+              ? JSON.parse(
+                  DATA.indicators[indicatorId].additionalFields_municipio,
+                )
+              : null
+          }
+          data={DATA.municipio[id]}
         />
       </Flex>
     </Flex>

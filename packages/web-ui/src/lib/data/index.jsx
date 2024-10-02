@@ -1,4 +1,5 @@
 import { memoize } from 'lodash-es'
+
 import Papa from 'papaparse'
 
 export function assetUrl(path) {
@@ -34,13 +35,13 @@ export function fmtIndicator(spec, value) {
 
 export const loadIndicators = memoize(async function () {
   const [indicators] = await fetchCsv(
-    assetUrl('/data/indicadores/metadata.csv'),
+    assetUrl('/data/indicadores/indicadores.csv'),
   )
 
   return Object.fromEntries(indicators.map((spec) => [spec.id, spec]))
 })
 
-function parseNumberPtBR(numberString) {
+export function parseNumberPtBR(numberString) {
   // Replace Brazilian formatting (period for thousand separator and comma for decimal point)
   const normalized = numberString.replace(/\./g, '').replace(',', '.')
   const val = parseFloat(normalized)
@@ -105,4 +106,8 @@ export const loadRegioesDeSaude = dataLoader({
 
 export const loadMunicipios = dataLoader({
   url: assetUrl('/data/indicadores/municipios.csv'),
+})
+
+export const loadBr = dataLoader({
+  url: assetUrl('/data/indicadores/br.csv'),
 })

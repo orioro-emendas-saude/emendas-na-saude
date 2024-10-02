@@ -11,18 +11,30 @@ export function MunicipioReport() {
 
   const municipio = DATA.municipio[geoId]
 
+  const municipioUf = DATA.uf[municipio.uf_id]
+  const municipioRegiao = DATA.regiao_de_saude[municipio.regiao_de_saude_id]
+
   return (
     <Flex direction="column">
       <Flex direction="column" gap="5">
-        <Heading as="h3">Comparativo entre municípios do estado:</Heading>
+        <Heading as="h3">
+          Comparativo com Região de Saúde, {municipioUf.name} e Brasil
+        </Heading>
         <IndicatorBarChart
-          geoType="municipio"
           indicatorId={indicatorId}
-          entries={DATA.municipios.filter(
-            (mun) => mun.uf_id === municipio.uf_id,
-          )}
+          entries={[
+            municipio,
+            municipioUf,
+            {
+              ...municipioRegiao,
+              name: `CIR ${municipioRegiao.name}`,
+            },
+            DATA.brasil[indicatorId]
+              ? { ...DATA.brasil, name: 'Brasil' }
+              : null,
+          ].filter(Boolean)}
           highlights={{
-            [geoId]: true,
+            [municipio.id]: true,
           }}
         />
       </Flex>

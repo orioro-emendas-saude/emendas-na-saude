@@ -38,7 +38,7 @@ export function IndicatorNav() {
     <EvenSpacedList
       columns={{
         xs: 5,
-        sm: 9,
+        sm: 10,
       }}
       gap="10"
       justifyContent="center"
@@ -61,6 +61,22 @@ export function IndicatorNav() {
           <span>{indicator.shortName}</span>
         </IndicatorLink>
       ))}
+
+      <IndicatorLink
+        to={`/mapa/todos/${geoType}/${geoId}`}
+        title="Todos os indicadores"
+        style={({ isActive, isPending, isTransitioning }) => {
+          return {
+            outline: isActive ? '2px solid var(--accent-9)' : null,
+            // fontWeight: isActive ? 'bold' : '',
+            // color: isPending ? 'red' : 'black',
+            // viewTransitionName: isTransitioning ? 'slide' : '',
+          }
+        }}
+      >
+        <img src={assetUrl(`/img/indicadores/TODOS.png`)} />
+        <span>Todos</span>
+      </IndicatorLink>
     </EvenSpacedList>
   )
 }
