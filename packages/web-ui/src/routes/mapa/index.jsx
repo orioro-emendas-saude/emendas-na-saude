@@ -137,7 +137,7 @@ export function Mapa({ printComponentRef }) {
         </PrintOnly>
 
         <ReactToPrint
-          documentTitle={`Emendas na Saúde - ${get(DATA, `${geoType}.${geoId}.name`)} - Relatório`}
+          documentTitle={`Emendas na Saúde - ${get(DATA, `${geoType}.${geoId}.name`)} - ${indicatorId === 'todos' ? 'Relatório geral' : get(DATA, `indicators.${indicatorId}.name`)}`}
           trigger={() => (
             <PrintButton>
               Imprimir relatório <Icon path={mdiPrinterOutline} size="16px" />
