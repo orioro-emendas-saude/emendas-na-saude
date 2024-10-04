@@ -20,10 +20,11 @@ import { Icon } from '@mdi/react'
 import { mdiPrinterOutline } from '@mdi/js'
 import { GeographySelector } from '../../components/GeographySelector'
 import { DataTable } from '../../components/DataTable'
-import { fmtIndicator } from '../../lib/data'
+import { assetUrl, fmtIndicator } from '../../lib/data'
 import { UfAllReport } from '../../components/UfAllReport'
 import { RegiaoAllReport } from '../../components/RegiaoAllReport'
 import { MunicipioAllReport } from '../../components/MunicipioAllReport'
+import QRCode from 'react-qr-code'
 
 const HideOnPrint = styled.div`
   @media print {
@@ -31,9 +32,30 @@ const HideOnPrint = styled.div`
   }
 `
 
+const PrintOnly = styled.div`
+  display: none;
+  @media print {
+    display: block;
+  }
+`
+
 const PrintButton = styled(Button)`
   @media print {
     display: none;
+  }
+`
+
+const HeaderContainer = styled(Flex)`
+  @media print {
+    background-color: #efefef;
+    padding: 10px;
+    border-radius: 10px;
+  }
+`
+
+const PrintBreak = styled(PrintOnly)`
+  @media print {
+    page-break-after: always;
   }
 `
 
@@ -47,7 +69,7 @@ export function Mapa({ printComponentRef }) {
     <Flex direction="column" gap="6">
       <IndicatorNav />
 
-      <Flex
+      <HeaderContainer
         direction="row"
         justifyContent="space-between"
         alignItems="center"
@@ -66,7 +88,56 @@ export function Mapa({ printComponentRef }) {
           </HideOnPrint>
           <Breadcrumb />
         </Flex>
+
+        <PrintOnly>
+          <Flex
+            direction="row"
+            gap="5"
+            justifyContent="space-between"
+            p="4"
+            alignItems="center"
+            style={{
+              backgroundColor: '#EFEFEF',
+              borderRadius: '10px',
+            }}
+          >
+            <img
+              style={{
+                height: 80,
+                flexShrink: 0,
+              }}
+              src={assetUrl(`/img/mapa-header.png`)}
+            />
+            <Flex
+              direction="column"
+              gap="2"
+              style={{
+                maxWidth: '200px',
+                fontSize: '.8rem',
+              }}
+            >
+              <Heading as="h5" size="1">
+                Acesse o relatório completo pelo link ou escaneando o QR Code:
+              </Heading>
+              <a
+                style={{
+                  color: 'black',
+                  wordBreak: 'break-all',
+                }}
+                href={window.location.href}
+              >
+                {window.location.href}
+              </a>
+            </Flex>
+
+            <div>
+              <QRCode size={80} value={window.location.href} />
+            </div>
+          </Flex>
+        </PrintOnly>
+
         <ReactToPrint
+          documentTitle={`Emendas na Saúde - ${get(DATA, `${geoType}.${geoId}.name`)} - Relatório`}
           trigger={() => (
             <PrintButton>
               Imprimir relatório <Icon path={mdiPrinterOutline} size="16px" />
@@ -74,7 +145,8 @@ export function Mapa({ printComponentRef }) {
           )}
           content={() => printComponentRef.current}
         />
-      </Flex>
+      </HeaderContainer>
+
       <Flex
         direction={{
           xs: 'column',
@@ -173,6 +245,10 @@ export function Mapa({ printComponentRef }) {
         </Flex>
       </Flex>
 
+      <PrintBreak>
+        <div>O relatório segue na próxima página</div>
+      </PrintBreak>
+
       {indicatorId !== 'todos' && (
         <>
           {geoType === 'uf' && <UfReport />}
@@ -188,6 +264,8 @@ export function Mapa({ printComponentRef }) {
           {geoType === 'municipio' && <MunicipioAllReport />}
         </>
       )}
+
+      <PrintOnly></PrintOnly>
     </Flex>
   )
 }

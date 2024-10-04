@@ -24,6 +24,14 @@ import { DataProvider } from '../DataContext'
 const AppContainer = styled.main`
   font-family: sans-serif;
 
+  @page {
+    margin-top: 1cm;
+    margin-bottom: 1cm;
+
+    margin-right: 0;
+    margin-left: 0;
+  }
+
   * {
     box-sizing: border-box;
   }

@@ -69,7 +69,7 @@ export function IndicatorBarChart({
     <ResponsiveContainer width={width} height={height}>
       <BarChart
         width={500}
-        height={300}
+        height={height}
         data={sortedEntries}
         margin={{
           top: 30,

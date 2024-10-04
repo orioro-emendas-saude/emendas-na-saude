@@ -1,8 +1,9 @@
-import { EvenSpacedList, Flex } from '@orioro/react-ui-core'
+import { Flex } from '@orioro/react-ui-core'
 import { useData } from '../DataContext'
 import { IndicatorBarChart } from '../IndicatorBarChart'
 import { useParams } from 'react-router-dom'
 import { Heading } from '@radix-ui/themes'
+import { PrintableEvenSpacedList } from '../PrintableEvenSpacedList'
 
 export function UfAllReport() {
   const DATA = useData()
@@ -12,7 +13,7 @@ export function UfAllReport() {
   const uf = DATA.uf[geoId]
 
   return (
-    <EvenSpacedList
+    <PrintableEvenSpacedList
       columns={{
         xs: 1,
         md: 2,
@@ -34,6 +35,6 @@ export function UfAllReport() {
           </Flex>
         ) : null,
       )}
-    </EvenSpacedList>
+    </PrintableEvenSpacedList>
   )
 }

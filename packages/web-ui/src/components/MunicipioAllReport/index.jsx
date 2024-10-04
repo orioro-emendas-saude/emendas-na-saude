@@ -3,6 +3,7 @@ import { useData } from '../DataContext'
 import { IndicatorBarChart } from '../IndicatorBarChart'
 import { useParams } from 'react-router-dom'
 import { Heading } from '@radix-ui/themes'
+import { PrintableEvenSpacedList } from '../PrintableEvenSpacedList'
 
 export function MunicipioAllReport() {
   const DATA = useData()
@@ -15,7 +16,7 @@ export function MunicipioAllReport() {
   const municipioRegiao = DATA.regiao_de_saude[municipio.regiao_de_saude_id]
 
   return (
-    <EvenSpacedList
+    <PrintableEvenSpacedList
       columns={{
         xs: 1,
         md: 2,
@@ -43,6 +44,6 @@ export function MunicipioAllReport() {
           />
         </Flex>
       ))}
-    </EvenSpacedList>
+    </PrintableEvenSpacedList>
   )
 }
