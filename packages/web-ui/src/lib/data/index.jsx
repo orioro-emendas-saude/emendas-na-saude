@@ -1,4 +1,4 @@
-import { memoize } from 'lodash-es'
+import { entries, memoize } from 'lodash-es'
 
 import Papa from 'papaparse'
 
@@ -69,13 +69,13 @@ export function addRank(entries, key, direction = 'ASC') {
   }))
 }
 
-function dataLoader({ url }) {
+function dataLoader({ url, parseEntry }) {
   return memoize(async function () {
     const indicators = await loadIndicators()
 
     const indicatorIds = Object.keys(indicators)
 
-    const [entries] = await fetchCsv(url, {
+    const [rawEntries] = await fetchCsv(url, {
       transform: (value, column) => {
         if (indicatorIds.includes(column.toUpperCase())) {
           return parseNumberPtBR(value)
@@ -84,6 +84,9 @@ function dataLoader({ url }) {
         }
       },
     })
+
+    const entries =
+      typeof parseEntry === 'function' ? rawEntries.map(parseEntry) : rawEntries
 
     //
     // For each indicator, apply rank
@@ -98,16 +101,32 @@ function dataLoader({ url }) {
 
 export const loadUfs = dataLoader({
   url: assetUrl('/data/indicadores/ufs.csv'),
+  parseEntry: (entry) => ({
+    ...entry,
+    geoType: 'uf',
+  }),
 })
 
 export const loadRegioesDeSaude = dataLoader({
   url: assetUrl('/data/indicadores/regioes-de-saude.csv'),
+  parseEntry: (entry) => ({
+    ...entry,
+    geoType: 'regiao_de_saude',
+  }),
 })
 
 export const loadMunicipios = dataLoader({
   url: assetUrl('/data/indicadores/municipios.csv'),
+  parseEntry: (entry) => ({
+    ...entry,
+    geoType: 'municipio',
+  }),
 })
 
 export const loadBr = dataLoader({
   url: assetUrl('/data/indicadores/br.csv'),
+  parseEntry: (entry) => ({
+    ...entry,
+    geoType: 'pais',
+  }),
 })

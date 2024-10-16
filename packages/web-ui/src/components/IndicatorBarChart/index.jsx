@@ -40,7 +40,6 @@ const Y_AXIS = {
 }
 
 export function IndicatorBarChart({
-  geoType,
   indicatorId,
   entries,
   highlights = {},
@@ -62,8 +61,6 @@ export function IndicatorBarChart({
   })
 
   const fmtValue = (value) => fmtIndicator(DATA.indicators[indicatorId], value)
-
-  const clickable = Boolean(geoType)
 
   return (
     <ResponsiveContainer width={width} height={height}>
@@ -97,14 +94,13 @@ export function IndicatorBarChart({
         />
         <Tooltip formatter={fmtValue} />
         <Bar
-          onClick={
-            clickable
-              ? (entry) =>
-                  navigate(`/mapa/${indicatorId}/${geoType}/${entry.id}`)
-              : undefined
-          }
+          onClick={(entry) => {
+            if (entry.geoType) {
+              navigate(`/mapa/${indicatorId}/${entry.geoType}/${entry.id}`)
+            }
+          }}
           style={{
-            cursor: clickable ? 'pointer' : 'auto',
+            cursor: 'pointer',
           }}
           dataKey={indicatorId}
           activeBar={<Rectangle fill={chartColor} />}

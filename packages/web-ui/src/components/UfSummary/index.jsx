@@ -24,7 +24,7 @@ export function UfSummary({ id }) {
             type: 'text',
           }}
           label="População"
-          value={get(DATA, `uf.${id}.Pop_2022`)}
+          value={get(DATA, `uf.${id}.populacao`)}
         />
 
         <Output
