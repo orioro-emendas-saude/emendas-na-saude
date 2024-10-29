@@ -19,9 +19,9 @@ const IndicatorLink = styled(NavLink)`
 
   > span {
     font-size: 0.7rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    // white-space: nowrap;
+    // overflow: hidden;
+    // text-overflow: ellipsis;
     text-align: center;
   }
 
@@ -51,14 +51,23 @@ export function IndicatorNav() {
           style={({ isActive, isPending, isTransitioning }) => {
             return {
               outline: isActive ? '2px solid var(--accent-9)' : null,
-              // fontWeight: isActive ? 'bold' : '',
-              // color: isPending ? 'red' : 'black',
-              // viewTransitionName: isTransitioning ? 'slide' : '',
             }
           }}
         >
           <img src={assetUrl(`/img/indicadores/${indicator.id}.png`)} />
-          <span>{indicator.shortName}</span>
+          <span
+            style={
+              indicator.id === 'EMENDAS_PERCAP'
+                ? {
+                    fontWeight: 'bold',
+                    background: 'var(--yellow-5)',
+                    borderRadius: '3px',
+                  }
+                : {}
+            }
+          >
+            {indicator.shortName}
+          </span>
         </IndicatorLink>
       ))}
 

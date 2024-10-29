@@ -1,5 +1,13 @@
 id,name,shortName,rank,color,comparisonBasis,description,Fonte,Ano de referência,measureUnit,numberFormatter,additionalFields_uf,additionalFields_regiao_de_saude,additionalFields_municipio,Status,Observações
 INEAB,INEAB (Índice de necessidade potencial por emendas na Atenção Básica),INEAB,DESC,purple,Região,"Criado pela Rede Temática de Saúde do GIFE com o objetivo de sintetizar diversos indicadores relacionados à demanda em potencial por emendas em determinado municípios. Contempla as dimensões de cobertura, resultados em saúde e disponibilidade de recursos no nível municipal.",,,,,,,,,
+EMENDAS_PERCAP,Emendas (per capita),Emendas (per capita),ASC,green,Região,Valor total das emendas pagas na subfunção ‘Atenção Básica’ no exercicio de 2023 dividido pela população do município em 2022.,Siga Brasil e IBGE estimativa da população 2022,2023,,"{""style"": ""currency"", ""currency"": ""BRL""}","[
+{""label"": ""Emendas (total)"", ""key"": ""EMENDAS_TOTAL""}
+]","[
+{""label"": ""Emendas (total)"", ""key"": ""EMENDAS_TOTAL""}
+]","[
+{""label"": ""Emendas (total)"", ""key"": ""EMENDAS_TOTAL""}
+]",,
+ORC_PERCAP,Orçamento municipal para a saúde (per capita),Orç. Municipal,ASC,green,Região,"Gasto total do orçamento liquidado municipal em saúde, em reais, per capita.",Tesouro Nacional - Sistema de Informações Contábeis e Fiscais do Setor Público Brasileiro (Siconfi) e  IBGE estimativa da população 2022,2023,,"{""style"": ""currency"", ""currency"": ""BRL""}",,,,,
 COBERTURA_AB,Cobertura de Atenção Básica (PSF),Cobertura AB,ASC,blue,Região,"Cobertura populacional estimada na Atenção Básica, dada pelo percentual da população residente coberta por equipes da Estratégia Saúde da Família e por equipes de Atenção Básica equivalentes.",Ministério da Saúde - E-Gestor Informação e Gestão da Atenção Básica,12/2023,,"{""style"": ""percent""}",,,,,
 PORCENTAGEM_POP_SUS,População usuária exclusiva do SUS,% SUS,ASC,blue,Nacional,"Estimativa do percentual da população de cada município que é usuária exclusiva do SUS, sem plano de saúde suplementar.",Agência Nacional de Saúde Suplementar e IBGE estimativa da população 2022,03/2024,,"{""style"": ""percent""}",,,,,
 MORT_DCNT,Taxa de mortalidade por Doenças Crônicas não Transmissíveis,Mort. DCNT,DESC,red,Região,"Taxa de mortalidade prematura (indivíduos com idade entre 30 e 69 anos) por doenças crônicas não-transmissíveis, por 100 mil habitantes na faixa etária de 30 a 69 anos.",Secretaria de Vigilância em Saúde e Ambiente -  Painel de Monitoramento da Mortalidade Prematura (30 a 69 anos) por DCNT e IBGE estimativa da população 2022,2023,por cem mil habitantes,,,,,,
@@ -16,11 +24,3 @@ Para o valor referente às taxas municipais, utilizamos o valor médio da regiã
 VACINACAO,Cobertura Vacinal,Vacinação (%),ASC,red,Nacional,Percentual da população alvo imunizada,"Ministério da Saúde - Cobertura Vacinal - Residência
 
 ",2023,,"{""style"": ""percent""}",,,,,
-ORC_PERCAP,Orçamento municipal para a saúde (per capita),Orç. Municipal,ASC,green,Região,"Gasto total do orçamento liquidado municipal em saúde, em reais, per capita.",Tesouro Nacional - Sistema de Informações Contábeis e Fiscais do Setor Público Brasileiro (Siconfi) e  IBGE estimativa da população 2022,2023,,"{""style"": ""currency"", ""currency"": ""BRL""}",,,,,
-EMENDAS_PERCAP,Emendas (per capita),Emendas (per capita),ASC,green,Região,Valor total das emendas pagas na subfunção ‘Atenção Básica’ no exercicio de 2023 dividido pela população do município em 2022.,Siga Brasil e IBGE estimativa da população 2022,2023,,"{""style"": ""currency"", ""currency"": ""BRL""}","[
-{""label"": ""Emendas (total)"", ""key"": ""EMENDAS_TOTAL""}
-]","[
-{""label"": ""Emendas (total)"", ""key"": ""EMENDAS_TOTAL""}
-]","[
-{""label"": ""Emendas (total)"", ""key"": ""EMENDAS_TOTAL""}
-]",,
