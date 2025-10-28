@@ -26,7 +26,7 @@ export function fmtIndicator(spec, value) {
   const { numberFormatter, measureUnit } = spec
 
   value = new Intl.NumberFormat('pt-BR', {
-    maximumSignificantDigits: 2,
+    // maximumSignificantDigits: 2,
     ...(numberFormatter ? JSON.parse(numberFormatter) : {}),
   }).format(value)
 
@@ -43,7 +43,7 @@ export const loadIndicators = memoize(async function () {
 
 export function parseNumberPtBR(numberString) {
   // Replace Brazilian formatting (period for thousand separator and comma for decimal point)
-  const normalized = numberString.replace(/\./g, '').replace(',', '.')
+  const normalized = (numberString || '0').replace(/\./g, '').replace(',', '.')
   const val = parseFloat(normalized)
 
   return Number.isNaN(val) ? 0 : val

@@ -37,8 +37,13 @@ export function IndicatorNav() {
   return (
     <EvenSpacedList
       columns={{
-        xs: 5,
-        sm: 10,
+        xs: 4,
+        sm: 8,
+      }}
+      style={{
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        maxWidth: '700px',
       }}
       gap="10"
       justifyContent="center"
