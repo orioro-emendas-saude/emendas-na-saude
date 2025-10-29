@@ -10,7 +10,7 @@ import { Heading } from '@radix-ui/themes'
 
 const Container = styled.div``
 
-const TIPO_LABELS = {
+const MODALIDADE_LABELS = {
   TOTAL: 'Todos',
   IND: 'Individual',
   BANC: 'Bancada',
@@ -21,20 +21,20 @@ const TIPO_LABELS = {
 const CAT_ECON_LABELS = {
   TOTAL: 'Todas',
   CUSTEIO: 'Custeio',
-  INVE: 'Investimento',
+  INVES: 'Investimento',
 }
 
 export function EmendasPerCapAdditionalFields({ data }) {
   const DATA = useData()
 
-  const [tipo, setTipo] = useState('TOTAL')
+  const [modalidade, setModalidade] = useState('TOTAL')
   const [catEcon, setCatEcon] = useState('TOTAL')
 
   const dataKey = useMemo(() => {
-    return tipo === 'TOTAL' && catEcon === 'TOTAL'
+    return modalidade === 'TOTAL' && catEcon === 'TOTAL'
       ? 'EMENDAS_TOTAL'
-      : ['EMENDAS', tipo, catEcon].filter(Boolean).join('_')
-  }, [tipo, catEcon])
+      : ['EMENDAS', modalidade, catEcon].filter(Boolean).join('_')
+  }, [modalidade, catEcon])
 
   return (
     <Flex direction="column">
@@ -45,7 +45,7 @@ export function EmendasPerCapAdditionalFields({ data }) {
       >
         {[
           'Emendas',
-          tipo === 'TOTAL' ? null : TIPO_LABELS[tipo],
+          modalidade === 'TOTAL' ? null : MODALIDADE_LABELS[modalidade],
           catEcon === 'TOTAL' ? null : CAT_ECON_LABELS[catEcon],
           '(total)',
         ]
@@ -55,10 +55,10 @@ export function EmendasPerCapAdditionalFields({ data }) {
       </label>
       <Flex direction="row">
         <SimpleSelect
-          label="Tipo"
-          value={tipo}
-          onSetValue={setTipo}
-          options={Object.entries(TIPO_LABELS).map(([value, label]) => ({
+          label="Modalidade"
+          value={modalidade}
+          onSetValue={setModalidade}
+          options={Object.entries(MODALIDADE_LABELS).map(([value, label]) => ({
             value,
             label,
           }))}
