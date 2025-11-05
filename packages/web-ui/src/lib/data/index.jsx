@@ -43,7 +43,10 @@ export const loadIndicators = memoize(async function () {
 
 export function parseNumberPtBR(numberString) {
   // Replace Brazilian formatting (period for thousand separator and comma for decimal point)
-  const normalized = (numberString || '0').replace(/\./g, '').replace(',', '.')
+  const normalized = (numberString || '0')
+    .trim()
+    .replace(/\./g, '')
+    .replace(',', '.')
   const val = parseFloat(normalized)
 
   return Number.isNaN(val) ? 0 : val
